@@ -12,13 +12,8 @@ const { authenticateToken } = require('../middleware/auth');
 
 const uploadDestination = 'uploads';
 
-// Показываем, где хранить файлы
-const storage = multer.diskStorage({
-	destination: uploadDestination,
-	filename: function (req, file, cb) {
-		cb(null, file.originalname);
-	},
-});
+// Хранение файлов в памяти (buffer)
+const storage = multer.memoryStorage();
 
 const upload = multer({ storage: storage });
 
@@ -30,10 +25,11 @@ router.get('/users/:id', authenticateToken, UserController.getUserById);
 router.put('/users/:id', authenticateToken, upload.single('avatar'), UserController.updateUser);
 
 // Роуты постов
-router.post('/posts', authenticateToken, PostController.createPost);
+router.post('/posts', authenticateToken, upload.single('file'), PostController.createPost);
 router.get('/posts', authenticateToken, PostController.getAllPosts);
 router.get('/posts/:id', authenticateToken, PostController.getPostById);
 router.delete('/posts/:id', authenticateToken, PostController.deletePost);
+router.get('/posts/:id/file', authenticateToken, PostController.downloadPostFile);
 
 // Роуты комментариев
 router.post('/comments', authenticateToken, CommentController.createComment);

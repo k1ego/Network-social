@@ -41,6 +41,10 @@ model Post {
   likes     Like[]
   comments  Comment[]
   createdAt DateTime  @default(now())
+  // Новые поля для прикрепленного файла
+  fileData    Bytes?    // Поле для хранения файла в байтах
+  fileName    String?   // Название файла
+  fileType    String?   // Тип файла (например, "application/pdf")
 }
 
 model Like {
